@@ -2,6 +2,8 @@ package com.course.recourse.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.course.recourse.entities.enums.OrderStatus;
@@ -33,14 +36,9 @@ public class Order implements Serializable {
 	
 	private Integer orderStatus;
 	
-	public OrderStatus getOrderStatus() {
-		return OrderStatus.valueOf(orderStatus);
-	}
-
-	public void setOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus.getCode();
-	}
-
+	@OneToMany(mappedBy = "id.order")
+	private Set<OrderItem> items = new HashSet<>();
+	
 	public Order() {
 	}
 
@@ -51,6 +49,14 @@ public class Order implements Serializable {
 		this.client = client;
 		//this.orderStatus = orderStatus;
 		setOrderStatus(orderStatus);
+	}
+	
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(orderStatus);
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus.getCode();
 	}
 
 	public Long getId() {
@@ -100,5 +106,9 @@ public class Order implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Set<OrderItem> getItems() {
+		return items;
 	}
 }
